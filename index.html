@@ -31,25 +31,17 @@
 </head>
 <body class="text-slate-800 pb-20">
 
-<!-- ==================== HERO ALA MOBILE BANKING PENDIDIKAN ==================== -->
+<!-- ==================== HERO HEADER ==================== -->
 <header class="hero-bank text-white rounded-b-[2rem] shadow-2xl relative overflow-hidden">
   <div class="absolute -right-14 -top-14 w-56 h-56 rounded-full bg-yellow-400/15 blur-3xl pointer-events-none"></div>
   <div class="absolute -left-12 bottom-0 w-44 h-44 rounded-full bg-sky-300/20 blur-3xl pointer-events-none"></div>
 
   <div class="max-w-4xl mx-auto px-4 pt-4 pb-7 relative z-10 space-y-4">
-    <!-- Top Bar: Brand Banner + Action Buttons -->
+    <!-- Top Bar: Jargon PNG + Tombol Aksi -->
     <div class="flex items-center justify-between gap-2">
-      <div class="bg-white/95 backdrop-blur-md border border-white/40 rounded-2xl px-3.5 py-1.5 shadow-md flex items-center">
-  <img src="jargon.png" alt="SMAYO MANTAP REK!" class="h-10 sm:h-12 w-auto object-contain">
-</div>
-  <div class="leading-tight">
-    <div class="flex items-center gap-1.5">
-      <span class="font-extrabold text-base sm:text-lg tracking-tight text-white">SMAYO</span>
-      <span class="text-[10px] font-extrabold uppercase tracking-wider bg-red-600 text-white px-2 py-0.5 rounded-md shadow-sm">MANTAP REK!</span>
-    </div>
-    <div class="text-[10px] sm:text-[11px] font-semibold text-emerald-100">SMAN 1 Yosowilangun</div>
-  </div>
-</div>
+      <div class="bg-white/95 backdrop-blur-md border border-white/40 rounded-2xl px-3 py-1.5 shadow-md flex items-center shrink-0">
+        <img src="jargon.png" alt="SMAYO MANTAP REK!" class="h-10 sm:h-12 w-auto object-contain">
+      </div>
 
       <div class="flex items-center gap-1.5 shrink-0">
         <button onclick="openQrModal()" title="Bagikan QR Portal" class="w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 flex items-center justify-center text-sm transition">
@@ -176,7 +168,16 @@
           <input id="f-title" type="text" required placeholder="Nama Aplikasi (misal: SITATIB)" class="rounded-xl border border-slate-300 px-3 py-2 bg-white font-semibold">
           <input id="f-url" type="url" required placeholder="URL (https://... atau https://s.id/...)" class="rounded-xl border border-slate-300 px-3 py-2 bg-white font-mono">
           <input id="f-desc" type="text" required placeholder="Deskripsi singkat layanan" class="rounded-xl border border-slate-300 px-3 py-2 bg-white sm:col-span-2">
-          <input id="f-cat" type="text" required placeholder="Kategori (Keagamaan / Akademik / Kesiswaan)" class="rounded-xl border border-slate-300 px-3 py-2 bg-white">
+          <input id="f-cat" list="cat-suggestions" type="text" required placeholder="Pilih atau ketik Kategori" class="rounded-xl border border-slate-300 px-3 py-2 bg-white">
+          <datalist id="cat-suggestions">
+            <option value="Kurikulum">
+            <option value="Kesiswaan">
+            <option value="Humas">
+            <option value="Sarpras">
+            <option value="Keagamaan">
+            <option value="Kehadiran">
+            <option value="Informasi">
+          </datalist>
           <input id="f-badge" type="text" placeholder="Label Kecil (misal: Resmi / Guru / Publik)" class="rounded-xl border border-slate-300 px-3 py-2 bg-white">
           <select id="f-icon" class="rounded-xl border border-slate-300 px-3 py-2 bg-white font-semibold">
             <option value="fa-solid fa-globe">Ikon: Web / Globe</option>
@@ -185,7 +186,9 @@
             <option value="fa-solid fa-clipboard-user">Ikon: Daftar Hadir</option>
             <option value="fa-solid fa-shield-halved">Ikon: SITATIB / Perisai</option>
             <option value="fa-solid fa-laptop-code">Ikon: CBT / Ujian</option>
-            <option value="fa-solid fa-graduation-cap">Ikon: Akademik / Siswa</option>
+            <option value="fa-solid fa-graduation-cap">Ikon: Kurikulum / Akademik</option>
+            <option value="fa-solid fa-bullhorn">Ikon: Humas / Informasi</option>
+            <option value="fa-solid fa-building">Ikon: Sarpras / Fasilitas</option>
             <option value="fa-solid fa-file-lines">Ikon: Dokumen / Formulir</option>
             <option value="fa-solid fa-link">Ikon: Link Umum</option>
           </select>
@@ -214,7 +217,7 @@
     <div class="bg-slate-50 border-t border-slate-200 px-5 py-3.5 flex items-center justify-between shrink-0">
       <span id="admin-save-status" class="text-xs font-semibold text-slate-500">Klik Simpan untuk menerbitkan ke semua HP.</span>
       <button onclick="saveAdminChanges()" id="btn-admin-save" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-md transition">
-        <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Simpan & Terbitkan
+        <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Simpan &amp; Terbitkan
       </button>
     </div>
   </div>
@@ -243,7 +246,7 @@
 </div>
 
 <script>
-// TEMPEL URL WEB APP GOOGLE APPS SCRIPT DARI TAHAP 1 DI SINI:
+// TEMPEL URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI:
 const GAS_SUPERAPP_URL = 'https://script.google.com/macros/s/AKfycbydSkAudBXDIEe2XoJyLcnzxZGgA-NwBsJMc9nxolMMsV5166KZBoCBivAod4E-RVVN/exec';
 
 let appsDB = JSON.parse(localStorage.getItem('smayo_apps_db')) || [];
@@ -470,28 +473,4 @@ async function saveAdminChanges() {
 
 // ==================== QR & PWA ====================
 function openQrModal() {
-  const url = window.location.href;
-  const qr = qrcode(0, 'M'); qr.addData(url); qr.make();
-  document.getElementById('qr-share-box').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 1, scalable: true });
-  document.getElementById('qr-url-label').textContent = url;
-  document.getElementById('qr-modal').classList.remove('hidden');
-}
-function closeQrModal() { document.getElementById('qr-modal').classList.add('hidden'); }
-
-window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
-async function handleInstallClick() {
-  if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; }
-  else document.getElementById('ios-install-modal').classList.remove('hidden');
-}
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  updateClockAndGreeting();
-  setInterval(updateClockAndGreeting, 1000);
-  loadDynamicData();
-});
-</script>
-</body>
-</html>
+  const url =
