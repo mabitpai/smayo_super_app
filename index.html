@@ -67,9 +67,9 @@
       </div>
 
       <div class="sm:text-right bg-slate-950/35 border border-white/15 rounded-xl px-3.5 py-2.5 shrink-0">
-        <div id="live-clock" class="text-xl sm:text-2xl font-extrabold font-mono tracking-wider text-yellow-300 leading-none">00:00:00</div>
-        <div id="date-masehi" class="text-[11px] font-semibold text-white mt-1">-</div>
-        <div id="date-hijri" class="text-[10px] text-sky-200">-</div>
+        <div id="live-clock" class="text-xl sm:text-2xl font-extrabold font-mono tracking-wider text-yellow-300 leading-none">--:--:--</div>
+        <div id="date-masehi" class="text-[11px] font-semibold text-white mt-1">Memuat tanggal...</div>
+        <div id="date-hijri" class="text-[10px] text-sky-200"></div>
       </div>
     </div>
 
@@ -97,6 +97,12 @@
 
   <!-- Filter Kategori -->
   <div id="category-tabs" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+
+  <!-- Loading State -->
+  <div id="loading-state" class="bg-white rounded-2xl border border-slate-200 p-8 text-center">
+    <i class="fa-solid fa-spinner fa-spin text-2xl text-emerald-700 mb-2"></i>
+    <p class="text-xs font-bold text-slate-500">Memuat layanan SMAYO Super-App...</p>
+  </div>
 
   <!-- Grid Aplikasi -->
   <section id="apps-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3.5"></section>
@@ -246,11 +252,19 @@
 </div>
 
 <script>
-// TEMPEL URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI:
 const GAS_SUPERAPP_URL = 'https://script.google.com/macros/s/AKfycbydSkAudBXDIEe2XoJyLcnzxZGgA-NwBsJMc9nxolMMsV5166KZBoCBivAod4E-RVVN/exec';
 
-let appsDB = JSON.parse(localStorage.getItem('smayo_apps_db')) || [];
-let announcementText = localStorage.getItem('smayo_announcement') || '';
+let appsDB = [];
+let announcementText = '';
+try {
+  appsDB = JSON.parse(localStorage.getItem('smayo_apps_db') || '[]');
+  if (!Array.isArray(appsDB)) appsDB = [];
+  announcementText = localStorage.getItem('smayo_announcement') || '';
+} catch (e) {
+  appsDB = [];
+  announcementText = '';
+}
+
 let activeCategory = 'Semua';
 let deferredPrompt = null;
 let adminSession = null;
@@ -280,11 +294,13 @@ function updateClockAndGreeting() {
 
 // ==================== LOAD DATA DINAMIS DARI GOOGLE SHEET ====================
 async function loadDynamicData() {
-  renderAnnouncement();
-  renderCategories();
-  renderApps();
+  if (appsDB.length > 0) {
+    document.getElementById('loading-state').classList.add('hidden');
+    renderAnnouncement();
+    renderCategories();
+    renderApps();
+  }
 
-  if (!GAS_SUPERAPP_URL.startsWith('http')) return;
   try {
     const res = await fetch(GAS_SUPERAPP_URL);
     const data = await res.json();
@@ -293,11 +309,15 @@ async function loadDynamicData() {
       announcementText = (data.config && data.config.announcement) ? data.config.announcement : '';
       localStorage.setItem('smayo_apps_db', JSON.stringify(appsDB));
       localStorage.setItem('smayo_announcement', announcementText);
-      renderAnnouncement();
-      renderCategories();
-      renderApps();
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error('Gagal memuat data GAS:', e);
+  } finally {
+    document.getElementById('loading-state').classList.add('hidden');
+    renderAnnouncement();
+    renderCategories();
+    renderApps();
+  }
 }
 
 function renderAnnouncement() {
@@ -313,7 +333,7 @@ function renderAnnouncement() {
 function renderCategories() {
   const cats = ['Semua', ...new Set(appsDB.map(a => a.category))];
   document.getElementById('category-tabs').innerHTML = cats.map(c => `
-    <button onclick="setCategory('${c}')"
+    <button onclick="setCategory('${c.replace(/'/g, "\\'")}')"
       class="px-4 py-2 rounded-full text-xs font-extrabold whitespace-nowrap transition shadow-sm ${
         activeCategory === c ? 'bg-emerald-700 text-white ring-2 ring-yellow-400' : 'bg-white text-slate-600 hover:bg-emerald-50 border border-slate-200'
       }">${c}</button>
@@ -389,7 +409,7 @@ async function handleAdminLogin(e) {
       errEl.classList.remove('hidden');
     }
   } catch (err) {
-    errEl.textContent = 'Gagal terhubung ke server GAS. Pastikan URL sudah ditempel.';
+    errEl.textContent = 'Gagal terhubung ke server GAS.';
     errEl.classList.remove('hidden');
   } finally {
     btn.disabled = false;
@@ -473,4 +493,27 @@ async function saveAdminChanges() {
 
 // ==================== QR & PWA ====================
 function openQrModal() {
-  const url =
+  const url = window.location.href;
+  const qr = qrcode(0, 'M'); qr.addData(url); qr.make();
+  document.getElementById('qr-share-box').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 1, scalable: true });
+  document.getElementById('qr-url-label').textContent = url;
+  document.getElementById('qr-modal').classList.remove('hidden');
+}
+function closeQrModal() { document.getElementById('qr-modal').classList.add('hidden'); }
+
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+async function handleInstallClick() {
+  if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; }
+  else document.getElementById('ios-install-modal').classList.remove('hidden');
+}
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+
+// Jalankan segera saat halaman siap
+updateClockAndGreeting();
+setInterval(updateClockAndGreeting, 1000);
+loadDynamicData();
+</script>
+</body>
+</html>
