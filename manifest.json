@@ -1,6 +1,6 @@
 {
-  "name": "SMAYO Super-App — SMAN 1 Yosowilangun",
-  "short_name": "SMAYO App",
+  "name": "SIMAS — Sistem Informasi Manajemen SMAYO",
+  "short_name": "SIMAS",
   "description": "Portal Layanan Digital Terpadu SMA Negeri 1 Yosowilangun",
   "start_url": "./index.html",
   "display": "standalone",
@@ -8,7 +8,7 @@
   "theme_color": "#047857",
   "orientation": "portrait-primary",
   "icons": [
-    { "src": "logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "icon-simas.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-simas.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }
