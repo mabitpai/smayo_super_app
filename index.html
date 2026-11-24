@@ -9,7 +9,7 @@
   <title>SIMAS — Sistem Informasi Manajemen SMAYO</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon-simas.png">
-  <link rel="apple-touch-icon" href="ison-simas.png">
+  <link rel="apple-touch-icon" href="icon-simas.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
@@ -27,6 +27,19 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     #qr-share-box svg { width: 195px; height: 195px; display: block; margin: 0 auto; }
+
+    /* Running Text Halus */
+    .marquee-wrap { overflow: hidden; white-space: nowrap; position: relative; }
+    .marquee-track {
+      display: inline-block;
+      padding-left: 100%;
+      animation: simas-marquee 22s linear infinite;
+    }
+    .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+    @keyframes simas-marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
   </style>
 </head>
 <body class="text-slate-800 pb-20">
@@ -83,19 +96,35 @@
 </header>
 
 <!-- ==================== KONTEN UTAMA ==================== -->
-<main class="max-w-4xl mx-auto px-4 mt-5 space-y-5">
-  <!-- Banner Pengumuman Dinamis -->
-  <div id="announcement-box" class="hidden bg-amber-50 border border-amber-300 rounded-2xl p-3.5 flex items-start gap-3 shadow-sm">
-    <div class="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0 mt-0.5">
-      <i class="fa-solid fa-bullhorn text-xs"></i>
-    </div>
-    <div class="text-xs text-slate-800 leading-relaxed">
-      <div class="font-extrabold text-amber-900 uppercase text-[10px] tracking-wider">Informasi Sekolah</div>
-      <div id="announcement-text" class="mt-0.5 font-medium"></div>
+<main class="max-w-4xl mx-auto px-4 mt-4 space-y-4">
+
+  <!-- 1. RUNNING TEXT DINAMIS -->
+  <div id="running-text-box" class="hidden bg-white border border-emerald-200 rounded-2xl p-2 flex items-center gap-2.5 shadow-sm overflow-hidden">
+    <span class="bg-red-600 text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xl shrink-0 flex items-center gap-1 shadow-sm">
+      <i class="fa-solid fa-bullhorn"></i> INFO
+    </span>
+    <div class="marquee-wrap flex-1 text-xs font-bold text-emerald-950">
+      <div id="running-text-content" class="marquee-track"></div>
     </div>
   </div>
 
-  <!-- Filter Kategori -->
+  <!-- 2. BANNER SLIDE INFORMASI OTOMATIS (GOOGLE DRIVE) -->
+  <section id="banner-slider-section" class="hidden relative rounded-2xl overflow-hidden shadow-md border border-slate-200 bg-slate-900 group">
+    <div id="banner-slides-track" class="flex transition-transform duration-500 ease-out"></div>
+
+    <!-- Tombol Navigasi Kiri/Kanan -->
+    <button id="banner-prev-btn" onclick="moveBanner(-1)" class="hidden absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/45 hover:bg-black/70 text-white flex items-center justify-center text-xs backdrop-blur-sm transition">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button id="banner-next-btn" onclick="moveBanner(1)" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/45 hover:bg-black/70 text-white flex items-center justify-center text-xs backdrop-blur-sm transition">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+
+    <!-- Titik Indikator Slide -->
+    <div id="banner-dots" class="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10"></div>
+  </section>
+
+  <!-- 3. FILTER KATEGORI -->
   <div id="category-tabs" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
 
   <!-- Loading State -->
@@ -104,7 +133,7 @@
     <p class="text-xs font-bold text-slate-500">Memuat layanan SIMAS...</p>
   </div>
 
-  <!-- Grid Aplikasi -->
+  <!-- 4. GRID APLIKASI -->
   <section id="apps-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3.5"></section>
 
   <!-- State Kosong -->
@@ -119,7 +148,7 @@
   <p class="mt-0.5">SIMAS • Dikelola oleh Tim Humas &amp; IT Sekolah</p>
 </footer>
 
-<!-- ==================== IN-APP VIEWER (BUKA LINK DI DALAM SUPER-APP) ==================== -->
+<!-- ==================== IN-APP VIEWER ==================== -->
 <div id="app-viewer-modal" class="fixed inset-0 z-50 hidden bg-slate-900 flex flex-col">
   <div class="bg-emerald-950 text-white px-3 py-2.5 flex items-center justify-between gap-2 shadow-md shrink-0">
     <div class="flex items-center gap-2 min-w-0">
@@ -164,7 +193,7 @@
         <i class="fa-solid fa-user-shield text-yellow-300"></i>
       </div>
       <h3 class="font-extrabold text-base">LOGIN ADMIN SIMAS</h3>
-      <p class="text-[11px] text-emerald-200 mt-0.5">Akses khusus pengelola link &amp; pengumuman</p>
+      <p class="text-[11px] text-emerald-200 mt-0.5">Akses khusus pengelola SIMAS</p>
     </div>
     <form onsubmit="handleAdminLogin(event)" class="p-6 space-y-3.5">
       <div>
@@ -185,7 +214,7 @@
   </div>
 </div>
 
-<!-- ==================== PANEL ADMIN DINAMIS (KELOLA LINK) ==================== -->
+<!-- ==================== PANEL ADMIN DINAMIS ==================== -->
 <div id="admin-panel-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5">
   <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden">
     <div class="bg-emerald-900 text-white px-5 py-4 flex items-center justify-between shrink-0">
@@ -197,13 +226,32 @@
     </div>
 
     <div class="p-5 overflow-y-auto space-y-5 text-xs">
-      <!-- Edit Pengumuman -->
+      <!-- 1. Edit Running Text -->
       <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-2">
-        <label class="block font-extrabold text-amber-900 uppercase text-[11px]">Pengumuman Sekolah (Kosongkan jika tidak ada)</label>
-        <textarea id="admin-announcement" rows="2" class="w-full rounded-xl border border-amber-300 bg-white p-2.5 text-xs font-medium"></textarea>
+        <label class="block font-extrabold text-amber-900 uppercase text-[11px]"><i class="fa-solid fa-bullhorn mr-1"></i>Running Text Informasi (Kosongkan untuk menyembunyikan)</label>
+        <textarea id="admin-announcement" rows="2" placeholder="Ketik teks berjalan di sini..." class="w-full rounded-xl border border-amber-300 bg-white p-2.5 text-xs font-medium"></textarea>
       </div>
 
-      <!-- Form Tambah Link Baru -->
+      <!-- 2. Kelola Banner Slide (Google Drive) -->
+      <div class="bg-sky-50 border border-sky-200 rounded-2xl p-4 space-y-3">
+        <div>
+          <div class="font-extrabold text-sky-900 uppercase text-[11px]"><i class="fa-solid fa-images mr-1"></i>Kelola Banner Slide Otomatis (Via Google Drive)</div>
+          <p class="text-[10px] text-sky-700 mt-0.5">Unggah poster (rasio ideal 16:6 / 1600×600 px) ke Google Drive → atur akses <strong>"Siapa saja yang memiliki link"</strong> → tempel link Drive-nya di bawah.</p>
+        </div>
+
+        <form onsubmit="addNewBanner(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+          <input id="b-img" type="url" required placeholder="Tempel Link Share Google Drive Gambar (Wajib)" class="sm:col-span-6 rounded-xl border border-sky-300 px-3 py-2 bg-white font-mono">
+          <input id="b-title" type="text" placeholder="Judul / Caption (Opsional)" class="sm:col-span-3 rounded-xl border border-sky-300 px-3 py-2 bg-white">
+          <input id="b-link" type="url" placeholder="Link Tujuan Saat Diklik (Opsional)" class="sm:col-span-3 rounded-xl border border-sky-300 px-3 py-2 bg-white font-mono">
+          <button type="submit" class="sm:col-span-12 px-4 py-2 rounded-xl bg-sky-700 hover:bg-sky-800 text-white font-bold">
+            <i class="fa-solid fa-plus mr-1"></i> Tambah Slide Banner
+          </button>
+        </form>
+
+        <div id="admin-banners-list" class="divide-y divide-sky-200 border border-sky-200 rounded-xl overflow-hidden bg-white"></div>
+      </div>
+
+      <!-- 3. Form Tambah Link Layanan -->
       <form onsubmit="addNewLink(event)" class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 space-y-3">
         <div class="font-extrabold text-emerald-900 uppercase text-[11px]"><i class="fa-solid fa-plus-circle mr-1"></i>Tambah Layanan / Link Baru</div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -249,7 +297,7 @@
         </button>
       </form>
 
-      <!-- Daftar Link Saat Ini -->
+      <!-- 4. Daftar Link Aktif -->
       <div class="space-y-2">
         <div class="font-extrabold text-slate-700 uppercase text-[11px]">Daftar Layanan Aktif (<span id="admin-link-count">0</span>)</div>
         <div id="admin-links-list" class="divide-y divide-slate-200 border border-slate-200 rounded-2xl overflow-hidden"></div>
@@ -291,20 +339,35 @@
 const GAS_SUPERAPP_URL = 'https://script.google.com/macros/s/AKfycbydSkAudBXDIEe2XoJyLcnzxZGgA-NwBsJMc9nxolMMsV5166KZBoCBivAod4E-RVVN/exec';
 
 let appsDB = [];
+let bannersDB = [];
 let announcementText = '';
 try {
   appsDB = JSON.parse(localStorage.getItem('smayo_apps_db') || '[]');
   if (!Array.isArray(appsDB)) appsDB = [];
+  bannersDB = JSON.parse(localStorage.getItem('smayo_banners_db') || '[]');
+  if (!Array.isArray(bannersDB)) bannersDB = [];
   announcementText = localStorage.getItem('smayo_announcement') || '';
 } catch (e) {
-  appsDB = [];
-  announcementText = '';
+  appsDB = []; bannersDB = []; announcementText = '';
 }
 
 let activeCategory = 'Semua';
 let deferredPrompt = null;
 let adminSession = null;
 let currentViewerUrl = '';
+let currentBannerIdx = 0;
+let bannerTimer = null;
+
+// ==================== KONVERTER LINK GOOGLE DRIVE OTOMATIS ====================
+function resolveDriveImage(url) {
+  const u = String(url || '').trim();
+  if (!u) return '';
+  const match = u.match(/\/d\/([a-zA-Z0-9_-]+)/) || u.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (u.includes('drive.google.com') && match && match[1]) {
+    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1200`;
+  }
+  return u;
+}
 
 // ==================== JAM REALTIME & SAPAAN KHAS ====================
 function updateClockAndGreeting() {
@@ -329,11 +392,12 @@ function updateClockAndGreeting() {
   } catch (e) {}
 }
 
-// ==================== LOAD DATA DINAMIS DARI GOOGLE SHEET ====================
+// ==================== LOAD DATA DINAMIS ====================
 async function loadDynamicData() {
-  if (appsDB.length > 0) {
+  if (appsDB.length > 0 || bannersDB.length > 0) {
     document.getElementById('loading-state').classList.add('hidden');
-    renderAnnouncement();
+    renderRunningText();
+    renderBanners();
     renderCategories();
     renderApps();
   }
@@ -343,30 +407,110 @@ async function loadDynamicData() {
     const data = await res.json();
     if (data.status === 'ok') {
       appsDB = data.links || [];
+      bannersDB = data.banners || [];
       announcementText = (data.config && data.config.announcement) ? data.config.announcement : '';
       localStorage.setItem('smayo_apps_db', JSON.stringify(appsDB));
+      localStorage.setItem('smayo_banners_db', JSON.stringify(bannersDB));
       localStorage.setItem('smayo_announcement', announcementText);
     }
   } catch (e) {
     console.error('Gagal memuat data GAS:', e);
   } finally {
     document.getElementById('loading-state').classList.add('hidden');
-    renderAnnouncement();
+    renderRunningText();
+    renderBanners();
     renderCategories();
     renderApps();
   }
 }
 
-function renderAnnouncement() {
-  const box = document.getElementById('announcement-box');
+// ==================== RUNNING TEXT ====================
+function renderRunningText() {
+  const box = document.getElementById('running-text-box');
   if (announcementText && announcementText.trim()) {
     box.classList.remove('hidden');
-    document.getElementById('announcement-text').textContent = announcementText;
+    const track = document.getElementById('running-text-content');
+    track.textContent = announcementText;
+    // Sesuaikan durasi agar kecepatan baca konsisten untuk teks pendek maupun panjang
+    const duration = Math.max(16, Math.min(45, Math.round(announcementText.length * 0.22)));
+    track.style.animationDuration = `${duration}s`;
   } else {
     box.classList.add('hidden');
   }
 }
 
+// ==================== BANNER SLIDE CAROUSEL ====================
+function renderBanners() {
+  const sec = document.getElementById('banner-slider-section');
+  const track = document.getElementById('banner-slides-track');
+  const dots = document.getElementById('banner-dots');
+  const prevBtn = document.getElementById('banner-prev-btn');
+  const nextBtn = document.getElementById('banner-next-btn');
+
+  if (bannerTimer) clearInterval(bannerTimer);
+  if (!bannersDB || bannersDB.length === 0) {
+    sec.classList.add('hidden');
+    return;
+  }
+
+  sec.classList.remove('hidden');
+  currentBannerIdx = 0;
+
+  track.innerHTML = bannersDB.map((b, idx) => {
+    const imgSrc = resolveDriveImage(b.imageUrl);
+    const clickable = b.linkUrl ? `cursor-pointer` : '';
+    const clickAttr = b.linkUrl ? `onclick="openBannerLink(${idx})"` : '';
+    return `
+      <div ${clickAttr} class="w-full shrink-0 relative aspect-[16/6] sm:aspect-[16/5] bg-slate-800 ${clickable}">
+        <img src="${imgSrc}" alt="${b.title || 'Banner SIMAS'}" class="w-full h-full object-cover">
+        ${b.title ? `
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent px-4 pt-6 pb-7">
+            <div class="text-white font-extrabold text-xs sm:text-sm drop-shadow line-clamp-1">${b.title}</div>
+          </div>` : ''}
+      </div>`;
+  }).join('');
+
+  if (bannersDB.length > 1) {
+    prevBtn.classList.remove('hidden');
+    nextBtn.classList.remove('hidden');
+    dots.innerHTML = bannersDB.map((_, idx) => `
+      <button onclick="goToBanner(${idx})" class="banner-dot h-2 rounded-full transition-all ${idx === 0 ? 'w-6 bg-yellow-400' : 'w-2 bg-white/60'}"></button>
+    `).join('');
+    bannerTimer = setInterval(() => moveBanner(1), 4500);
+  } else {
+    prevBtn.classList.add('hidden');
+    nextBtn.classList.add('hidden');
+    dots.innerHTML = '';
+  }
+  updateBannerPosition();
+}
+
+function updateBannerPosition() {
+  const track = document.getElementById('banner-slides-track');
+  track.style.transform = `translateX(-${currentBannerIdx * 100}%)`;
+  document.querySelectorAll('.banner-dot').forEach((d, i) => {
+    d.className = `banner-dot h-2 rounded-full transition-all ${i === currentBannerIdx ? 'w-6 bg-yellow-400' : 'w-2 bg-white/60'}`;
+  });
+}
+
+function moveBanner(step) {
+  if (bannersDB.length <= 1) return;
+  currentBannerIdx = (currentBannerIdx + step + bannersDB.length) % bannersDB.length;
+  updateBannerPosition();
+}
+
+function goToBanner(idx) {
+  currentBannerIdx = idx;
+  updateBannerPosition();
+  if (bannerTimer) { clearInterval(bannerTimer); bannerTimer = setInterval(() => moveBanner(1), 4500); }
+}
+
+function openBannerLink(idx) {
+  const b = bannersDB[idx];
+  if (b && b.linkUrl) openUrlInViewer(b.title || 'Informasi Sekolah', b.linkUrl);
+}
+
+// ==================== KATEGORI & GRID APLIKASI ====================
 function renderCategories() {
   const cats = ['Semua', ...new Set(appsDB.map(a => a.category))];
   document.getElementById('category-tabs').innerHTML = cats.map(c => `
@@ -413,32 +557,31 @@ function renderApps() {
   `).join('');
 }
 
-// ==================== IN-APP VIEWER (TETAP DI DALAM SUPER-APP) ====================
+// ==================== IN-APP VIEWER ====================
 function openAppViewer(appId) {
   const app = appsDB.find(a => String(a.id) === String(appId));
-  if (!app || !app.url) return;
+  if (app && app.url) openUrlInViewer(app.title, app.url);
+}
 
-  currentViewerUrl = app.url;
-  document.getElementById('viewer-title').textContent = app.title;
-  document.getElementById('viewer-url-sub').textContent = app.url;
-  document.getElementById('viewer-external-btn').href = app.url;
+function openUrlInViewer(title, url) {
+  currentViewerUrl = url;
+  document.getElementById('viewer-title').textContent = title;
+  document.getElementById('viewer-url-sub').textContent = url;
+  document.getElementById('viewer-external-btn').href = url;
   document.getElementById('viewer-loading').classList.remove('hidden');
-  document.getElementById('viewer-iframe').src = app.url;
+  document.getElementById('viewer-iframe').src = url;
   document.getElementById('app-viewer-modal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
-
   try { history.pushState({ viewerOpen: true }, '', '#layanan'); } catch (e) {}
 }
 
 function closeAppViewer(fromPopstate = false) {
   const modal = document.getElementById('app-viewer-modal');
   if (modal.classList.contains('hidden')) return;
-
   modal.classList.add('hidden');
   document.getElementById('viewer-iframe').src = 'about:blank';
   document.body.style.overflow = '';
   currentViewerUrl = '';
-
   if (!fromPopstate && history.state && history.state.viewerOpen) {
     try { history.back(); } catch (e) {}
   }
@@ -451,13 +594,10 @@ function reloadAppViewer() {
 }
 
 window.addEventListener('popstate', () => {
-  const modal = document.getElementById('app-viewer-modal');
-  if (!modal.classList.contains('hidden')) {
-    closeAppViewer(true);
-  }
+  if (!document.getElementById('app-viewer-modal').classList.contains('hidden')) closeAppViewer(true);
 });
 
-// ==================== ADMIN LOGIN & PANEL KELOLA LINK ====================
+// ==================== ADMIN LOGIN & PANEL ====================
 function openAdminGate() {
   if (adminSession) { openAdminPanel(); return; }
   document.getElementById('admin-login-modal').classList.remove('hidden');
@@ -500,10 +640,49 @@ async function handleAdminLogin(e) {
 
 function openAdminPanel() {
   document.getElementById('admin-announcement').value = announcementText;
+  renderAdminBannersList();
   renderAdminLinksList();
   document.getElementById('admin-panel-modal').classList.remove('hidden');
 }
 function closeAdminPanel() { document.getElementById('admin-panel-modal').classList.add('hidden'); }
+
+function renderAdminBannersList() {
+  const el = document.getElementById('admin-banners-list');
+  if (!bannersDB || bannersDB.length === 0) {
+    el.innerHTML = '<div class="p-3 text-center text-slate-400">Belum ada banner slide aktif.</div>';
+    return;
+  }
+  el.innerHTML = bannersDB.map((b, idx) => `
+    <div class="p-2.5 flex items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <img src="${resolveDriveImage(b.imageUrl)}" class="w-16 h-9 object-cover rounded-lg border border-slate-200 shrink-0 bg-slate-100">
+        <div class="min-w-0">
+          <div class="font-bold text-slate-800 truncate">${b.title || 'Banner #' + (idx + 1)}</div>
+          <div class="text-[10px] font-mono text-slate-400 truncate">${b.linkUrl || 'Tanpa link klik'}</div>
+        </div>
+      </div>
+      <button onclick="deleteBanner(${idx})" class="px-2.5 py-1.5 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold shrink-0">Hapus</button>
+    </div>
+  `).join('');
+}
+
+function addNewBanner(e) {
+  e.preventDefault();
+  bannersDB.push({
+    id: 'B' + Date.now(),
+    imageUrl: document.getElementById('b-img').value.trim(),
+    title: document.getElementById('b-title').value.trim(),
+    linkUrl: document.getElementById('b-link').value.trim()
+  });
+  e.target.reset();
+  renderAdminBannersList();
+}
+
+function deleteBanner(idx) {
+  if (!confirm('Hapus slide banner ini?')) return;
+  bannersDB.splice(idx, 1);
+  renderAdminBannersList();
+}
 
 function renderAdminLinksList() {
   document.getElementById('admin-link-count').textContent = appsDB.length;
@@ -554,16 +733,17 @@ async function saveAdminChanges() {
       method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
         action: 'SAVE_ALL', email: adminSession.email, password: adminSession.password,
-        links: appsDB, announcement: announcementText
+        links: appsDB, banners: bannersDB, announcement: announcementText
       })
     });
     const data = await res.json();
     if (data.status === 'ok') {
       localStorage.setItem('smayo_apps_db', JSON.stringify(appsDB));
+      localStorage.setItem('smayo_banners_db', JSON.stringify(bannersDB));
       localStorage.setItem('smayo_announcement', announcementText);
-      renderAnnouncement(); renderCategories(); renderApps();
+      renderRunningText(); renderBanners(); renderCategories(); renderApps();
       st.textContent = '✓ Berhasil diterbitkan ke seluruh pengguna!';
-      alert('Perubahan berhasil disimpan dan langsung aktif di seluruh HP!');
+      alert('Perubahan Running Text, Banner, & Link berhasil diterbitkan!');
     } else throw new Error(data.message);
   } catch (err) {
     alert('Gagal menyimpan: ' + err.message);
