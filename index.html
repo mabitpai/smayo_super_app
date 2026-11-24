@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#047857">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>SMAYO Super-App — SMAN 1 Yosowilangun</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; -webkit-tap-highlight-color: transparent; }
+    .hero-bank {
+      background: linear-gradient(145deg, #022c22 0%, #047857 52%, #0284c7 100%);
+    }
+    .app-card { transition: transform 0.18s ease, box-shadow 0.18s ease; }
+    .app-card:active { transform: scale(0.97); }
+    @media (hover: hover) {
+      .app-card:hover { transform: translateY(-3px); box-shadow: 0 14px 26px -10px rgba(4, 120, 87, 0.22); }
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    #qr-share-box svg { width: 195px; height: 195px; display: block; margin: 0 auto; }
+  </style>
+</head>
+<body class="text-slate-800 pb-20">
+
+<!-- ==================== HERO ALA MOBILE BANKING PENDIDIKAN ==================== -->
+<header class="hero-bank text-white rounded-b-[2rem] shadow-2xl relative overflow-hidden">
+  <div class="absolute -right-14 -top-14 w-56 h-56 rounded-full bg-yellow-400/15 blur-3xl pointer-events-none"></div>
+  <div class="absolute -left-12 bottom-0 w-44 h-44 rounded-full bg-sky-300/20 blur-3xl pointer-events-none"></div>
+
+  <div class="max-w-4xl mx-auto px-4 pt-4 pb-7 relative z-10 space-y-4">
+    <!-- Top Bar: Brand Banner + Action Buttons -->
+    <div class="flex items-center justify-between gap-2">
+      <div class="bg-black rounded-2xl px-3 py-1.5 border border-emerald-500/40 shadow-md flex items-center">
+        <img src="jargon.jpg" alt="SMAYO MANTAP REK!" class="h-10 sm:h-12 w-auto object-contain"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div style="display:none;" class="items-center gap-2 py-1">
+          <img src="logo.png" class="h-8 w-8 object-contain">
+          <div class="leading-tight">
+            <div class="font-extrabold text-sm text-emerald-400">SMAYO</div>
+            <div class="text-[10px] font-extrabold text-red-500">MANTAP REK!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button onclick="openQrModal()" title="Bagikan QR Portal" class="w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 flex items-center justify-center text-sm transition">
+          <i class="fa-solid fa-qrcode"></i>
+        </button>
+        <button id="btn-install-pwa" onclick="handleInstallClick()" class="px-3 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-extrabold text-xs shadow-md flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-mobile-screen-button"></i> <span class="hidden sm:inline">Install</span>
+        </button>
+        <button onclick="openAdminGate()" title="Login Admin Humas" class="w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 flex items-center justify-center text-sm transition">
+          <i class="fa-solid fa-user-shield text-yellow-300"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Kartu Sapaan Khas + Jam & Tanggal Realtime -->
+    <div class="bg-white/12 backdrop-blur-md border border-white/20 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
+      <div>
+        <div class="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider bg-red-600 text-white px-2.5 py-0.5 rounded-full mb-1.5">
+          <i class="fa-solid fa-sparkles text-yellow-300"></i> SMAYO MANTAP REK!
+        </div>
+        <h2 id="greeting-text" class="text-base sm:text-lg font-extrabold tracking-tight leading-snug">Assalamu'alaikum, Selamat Datang</h2>
+        <p class="text-[11px] text-emerald-100 mt-0.5">Portal Layanan Digital Terpadu SMA Negeri 1 Yosowilangun</p>
+      </div>
+
+      <div class="sm:text-right bg-slate-950/35 border border-white/15 rounded-xl px-3.5 py-2.5 shrink-0">
+        <div id="live-clock" class="text-xl sm:text-2xl font-extrabold font-mono tracking-wider text-yellow-300 leading-none">00:00:00</div>
+        <div id="date-masehi" class="text-[11px] font-semibold text-white mt-1">-</div>
+        <div id="date-hijri" class="text-[10px] text-sky-200">-</div>
+      </div>
+    </div>
+
+    <!-- Pencarian Cepat -->
+    <div class="relative">
+      <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
+      <input id="search-app" type="text" oninput="renderApps()" placeholder="Cari layanan sekolah (Absen, Rapor, SITATIB, Web)..."
+        class="w-full pl-10 pr-4 py-3 rounded-2xl bg-white text-slate-800 text-xs sm:text-sm font-semibold shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-400">
+    </div>
+  </div>
+</header>
+
+<!-- ==================== KONTEN UTAMA ==================== -->
+<main class="max-w-4xl mx-auto px-4 mt-5 space-y-5">
+  <!-- Banner Pengumuman Dinamis -->
+  <div id="announcement-box" class="hidden bg-amber-50 border border-amber-300 rounded-2xl p-3.5 flex items-start gap-3 shadow-sm">
+    <div class="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+      <i class="fa-solid fa-bullhorn text-xs"></i>
+    </div>
+    <div class="text-xs text-slate-800 leading-relaxed">
+      <div class="font-extrabold text-amber-900 uppercase text-[10px] tracking-wider">Informasi Sekolah</div>
+      <div id="announcement-text" class="mt-0.5 font-medium"></div>
+    </div>
+  </div>
+
+  <!-- Filter Kategori -->
+  <div id="category-tabs" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+
+  <!-- Grid Aplikasi -->
+  <section id="apps-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3.5"></section>
+
+  <!-- State Kosong -->
+  <div id="empty-state" class="hidden bg-white rounded-2xl border border-slate-200 p-8 text-center">
+    <i class="fa-solid fa-folder-open text-3xl text-slate-300 mb-2"></i>
+    <p class="text-xs font-bold text-slate-500">Layanan tidak ditemukan.</p>
+  </div>
+</main>
+
+<footer class="max-w-4xl mx-auto px-4 mt-10 text-center text-[11px] text-slate-400">
+  <p class="font-bold text-slate-500">SMA Negeri 1 Yosowilangun • Kabupaten Lumajang</p>
+  <p class="mt-0.5">SMAYO Super-App • Dikelola oleh Tim Humas &amp; IT Sekolah</p>
+</footer>
+
+<!-- ==================== MODAL LOGIN ADMIN TUNGGAL ==================== -->
+<div id="admin-login-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden relative">
+    <button onclick="closeAdminLogin()" class="absolute right-4 top-4 text-white/80 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+    <div class="bg-emerald-900 text-white p-6 text-center">
+      <div class="w-12 h-12 mx-auto rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-xl mb-2">
+        <i class="fa-solid fa-user-shield text-yellow-300"></i>
+      </div>
+      <h3 class="font-extrabold text-base">LOGIN ADMIN SUPER-APP</h3>
+      <p class="text-[11px] text-emerald-200 mt-0.5">Akses khusus pengelola link &amp; pengumuman</p>
+    </div>
+    <form onsubmit="handleAdminLogin(event)" class="p-6 space-y-3.5">
+      <div>
+        <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Email Admin</label>
+        <input id="admin-email" type="email" required value="humassmayo@gmail.com"
+          class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+      </div>
+      <div>
+        <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Password</label>
+        <input id="admin-pass" type="password" required placeholder="Masukkan password admin"
+          class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+      </div>
+      <div id="admin-login-err" class="hidden text-xs bg-rose-50 text-rose-700 border border-rose-200 p-2.5 rounded-xl font-semibold"></div>
+      <button type="submit" id="btn-admin-login" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-xl text-sm shadow-md transition">
+        <i class="fa-solid fa-right-to-bracket mr-1"></i> Masuk Panel Admin
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== PANEL ADMIN DINAMIS (KELOLA LINK) ==================== -->
+<div id="admin-panel-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden">
+    <div class="bg-emerald-900 text-white px-5 py-4 flex items-center justify-between shrink-0">
+      <div>
+        <h3 class="font-extrabold text-sm sm:text-base"><i class="fa-solid fa-sliders text-yellow-300 mr-1.5"></i>Panel Admin SMAYO Super-App</h3>
+        <p class="text-[11px] text-emerald-200">Login sebagai: humassmayo@gmail.com</p>
+      </div>
+      <button onclick="closeAdminPanel()" class="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-bold">Tutup</button>
+    </div>
+
+    <div class="p-5 overflow-y-auto space-y-5 text-xs">
+      <!-- Edit Pengumuman -->
+      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-2">
+        <label class="block font-extrabold text-amber-900 uppercase text-[11px]">Pengumuman Sekolah (Kosongkan jika tidak ada)</label>
+        <textarea id="admin-announcement" rows="2" class="w-full rounded-xl border border-amber-300 bg-white p-2.5 text-xs font-medium"></textarea>
+      </div>
+
+      <!-- Form Tambah Link Baru -->
+      <form onsubmit="addNewLink(event)" class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 space-y-3">
+        <div class="font-extrabold text-emerald-900 uppercase text-[11px]"><i class="fa-solid fa-plus-circle mr-1"></i>Tambah Layanan / Link Baru</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <input id="f-title" type="text" required placeholder="Nama Aplikasi (misal: SITATIB)" class="rounded-xl border border-slate-300 px-3 py-2 bg-white font-semibold">
+          <input id="f-url" type="url" required placeholder="URL (https://... atau https://s.id/...)" class="rounded-xl border border-slate-300 px-3 py-2 bg-white font-mono">
+          <input id="f-desc" type="text" required placeholder="Deskripsi singkat layanan" class="rounded-xl border border-slate-300 px-3 py-2 bg-white sm:col-span-2">
+          <input id="f-cat" type="text" required placeholder="Kategori (Keagamaan / Akademik / Kesiswaan)" class="rounded-xl border border-slate-300 px-3 py-2 bg-white">
+          <input id="f-badge" type="text" placeholder="Label Kecil (misal: Resmi / Guru / Publik)" class="rounded-xl border border-slate-300 px-3 py-2 bg-white">
+          <select id="f-icon" class="rounded-xl border border-slate-300 px-3 py-2 bg-white font-semibold">
+            <option value="fa-solid fa-globe">Ikon: Web / Globe</option>
+            <option value="fa-solid fa-mosque">Ikon: Masjid / Keagamaan</option>
+            <option value="fa-solid fa-book-quran">Ikon: Al-Qur'an / Rapor</option>
+            <option value="fa-solid fa-clipboard-user">Ikon: Daftar Hadir</option>
+            <option value="fa-solid fa-shield-halved">Ikon: SITATIB / Perisai</option>
+            <option value="fa-solid fa-laptop-code">Ikon: CBT / Ujian</option>
+            <option value="fa-solid fa-graduation-cap">Ikon: Akademik / Siswa</option>
+            <option value="fa-solid fa-file-lines">Ikon: Dokumen / Formulir</option>
+            <option value="fa-solid fa-link">Ikon: Link Umum</option>
+          </select>
+          <select id="f-color" class="rounded-xl border border-slate-300 px-3 py-2 bg-white font-semibold">
+            <option value="bg-emerald-600">Warna: Hijau SMAYO</option>
+            <option value="bg-sky-600">Warna: Biru Langit SMAYO</option>
+            <option value="bg-red-600">Warna: Merah Obor</option>
+            <option value="bg-teal-600">Warna: Teal / Tosca</option>
+            <option value="bg-amber-600">Warna: Kuning Emas</option>
+            <option value="bg-indigo-600">Warna: Biru Indigo</option>
+            <option value="bg-slate-800">Warna: Gelap Elegan</option>
+          </select>
+        </div>
+        <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold">
+          <i class="fa-solid fa-plus mr-1"></i> Tambahkan ke Daftar
+        </button>
+      </form>
+
+      <!-- Daftar Link Saat Ini -->
+      <div class="space-y-2">
+        <div class="font-extrabold text-slate-700 uppercase text-[11px]">Daftar Layanan Aktif (<span id="admin-link-count">0</span>)</div>
+        <div id="admin-links-list" class="divide-y divide-slate-200 border border-slate-200 rounded-2xl overflow-hidden"></div>
+      </div>
+    </div>
+
+    <div class="bg-slate-50 border-t border-slate-200 px-5 py-3.5 flex items-center justify-between shrink-0">
+      <span id="admin-save-status" class="text-xs font-semibold text-slate-500">Klik Simpan untuk menerbitkan ke semua HP.</span>
+      <button onclick="saveAdminChanges()" id="btn-admin-save" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-md transition">
+        <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Simpan & Terbitkan
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL QR & PANDUAN INSTALL ==================== -->
+<div id="qr-modal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm text-center p-6 relative">
+    <button onclick="closeQrModal()" class="absolute right-4 top-4 w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+    <div class="text-xs font-extrabold uppercase tracking-wider text-emerald-700">Bagikan Portal</div>
+    <h3 class="text-base font-extrabold text-slate-900 mt-0.5">Scan QR SMAYO Super-App</h3>
+    <div id="qr-share-box" class="p-3 bg-white border-2 border-emerald-700 rounded-2xl inline-block shadow-sm my-4"></div>
+    <div id="qr-url-label" class="text-[10px] font-mono text-slate-500 break-all bg-slate-100 p-2 rounded-xl"></div>
+  </div>
+</div>
+
+<div id="ios-install-modal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 relative space-y-3">
+    <button onclick="document.getElementById('ios-install-modal').classList.add('hidden')" class="absolute right-4 top-4 w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+    <h3 class="font-extrabold text-base text-slate-900">Pasang di Layar Utama HP</h3>
+    <ul class="text-xs text-slate-700 space-y-2 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+      <li><strong>Android (Chrome):</strong> Klik titik tiga (⋮) di pojok kanan atas → pilih <strong>Install app / Tambahkan ke layar utama</strong>.</li>
+      <li><strong>iPhone (Safari):</strong> Klik ikon <strong>Share</strong> → pilih <strong>Add to Home Screen</strong>.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+// TEMPEL URL WEB APP GOOGLE APPS SCRIPT DARI TAHAP 1 DI SINI:
+const GAS_SUPERAPP_URL = 'https://script.google.com/macros/s/AKfycbydSkAudBXDIEe2XoJyLcnzxZGgA-NwBsJMc9nxolMMsV5166KZBoCBivAod4E-RVVN/exec';
+
+let appsDB = JSON.parse(localStorage.getItem('smayo_apps_db')) || [];
+let announcementText = localStorage.getItem('smayo_announcement') || '';
+let activeCategory = 'Semua';
+let deferredPrompt = null;
+let adminSession = null;
+
+// ==================== JAM REALTIME & SAPAAN KHAS ====================
+function updateClockAndGreeting() {
+  const now = new Date();
+  const h = now.getHours();
+  const greet = h < 11 ? 'Selamat Pagi' : (h < 15 ? 'Selamat Siang' : (h < 18 ? 'Selamat Sore' : 'Selamat Malam'));
+  document.getElementById('greeting-text').textContent = `Assalamu'alaikum, ${greet} Warga SMAYO!`;
+
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mm = String(now.getMinutes()).padStart(2, '0');
+  const ss = String(now.getSeconds()).padStart(2, '0');
+  document.getElementById('live-clock').textContent = `${hh}:${mm}:${ss} WIB`;
+
+  document.getElementById('date-masehi').textContent = now.toLocaleDateString('id-ID', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  });
+
+  try {
+    document.getElementById('date-hijri').textContent = new Intl.DateTimeFormat('id-ID-u-ca-islamic', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    }).format(now);
+  } catch (e) {}
+}
+
+// ==================== LOAD DATA DINAMIS DARI GOOGLE SHEET ====================
+async function loadDynamicData() {
+  renderAnnouncement();
+  renderCategories();
+  renderApps();
+
+  if (!GAS_SUPERAPP_URL.startsWith('http')) return;
+  try {
+    const res = await fetch(GAS_SUPERAPP_URL);
+    const data = await res.json();
+    if (data.status === 'ok') {
+      appsDB = data.links || [];
+      announcementText = (data.config && data.config.announcement) ? data.config.announcement : '';
+      localStorage.setItem('smayo_apps_db', JSON.stringify(appsDB));
+      localStorage.setItem('smayo_announcement', announcementText);
+      renderAnnouncement();
+      renderCategories();
+      renderApps();
+    }
+  } catch (e) {}
+}
+
+function renderAnnouncement() {
+  const box = document.getElementById('announcement-box');
+  if (announcementText && announcementText.trim()) {
+    box.classList.remove('hidden');
+    document.getElementById('announcement-text').textContent = announcementText;
+  } else {
+    box.classList.add('hidden');
+  }
+}
+
+function renderCategories() {
+  const cats = ['Semua', ...new Set(appsDB.map(a => a.category))];
+  document.getElementById('category-tabs').innerHTML = cats.map(c => `
+    <button onclick="setCategory('${c}')"
+      class="px-4 py-2 rounded-full text-xs font-extrabold whitespace-nowrap transition shadow-sm ${
+        activeCategory === c ? 'bg-emerald-700 text-white ring-2 ring-yellow-400' : 'bg-white text-slate-600 hover:bg-emerald-50 border border-slate-200'
+      }">${c}</button>
+  `).join('');
+}
+
+function setCategory(cat) { activeCategory = cat; renderCategories(); renderApps(); }
+
+function renderApps() {
+  const q = document.getElementById('search-app').value.trim().toLowerCase();
+  const filtered = appsDB.filter(a => {
+    const matchCat = activeCategory === 'Semua' || a.category === activeCategory;
+    const matchText = !q || a.title.toLowerCase().includes(q) || (a.desc || '').toLowerCase().includes(q) || a.category.toLowerCase().includes(q);
+    return matchCat && matchText;
+  });
+
+  const grid = document.getElementById('apps-grid');
+  const empty = document.getElementById('empty-state');
+  if (filtered.length === 0) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+
+  grid.innerHTML = filtered.map(a => `
+    <a href="${a.url}" target="_blank" rel="noopener noreferrer"
+      class="app-card bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm flex flex-col justify-between gap-3 group">
+      <div class="flex items-start justify-between gap-2">
+        <div class="w-12 h-12 rounded-2xl ${a.color || 'bg-emerald-600'} text-white flex items-center justify-center text-xl shadow-md">
+          <i class="${a.icon || 'fa-solid fa-link'}"></i>
+        </div>
+        ${a.badge ? `<span class="text-[9px] font-extrabold uppercase tracking-wide px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">${a.badge}</span>` : ''}
+      </div>
+      <div>
+        <h3 class="font-extrabold text-sm text-slate-900 group-hover:text-emerald-700 transition leading-snug">${a.title}</h3>
+        <p class="text-[11px] text-slate-500 mt-1 leading-relaxed line-clamp-2">${a.desc || ''}</p>
+      </div>
+      <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px] font-bold text-emerald-700">
+        <span>Buka Layanan</span>
+        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+      </div>
+    </a>
+  `).join('');
+}
+
+// ==================== ADMIN LOGIN & PANEL KELOLA LINK ====================
+function openAdminGate() {
+  if (adminSession) { openAdminPanel(); return; }
+  document.getElementById('admin-login-modal').classList.remove('hidden');
+  document.getElementById('admin-pass').focus();
+}
+function closeAdminLogin() { document.getElementById('admin-login-modal').classList.add('hidden'); }
+
+async function handleAdminLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('admin-email').value.trim();
+  const password = document.getElementById('admin-pass').value.trim();
+  const errEl = document.getElementById('admin-login-err');
+  const btn = document.getElementById('btn-admin-login');
+  errEl.classList.add('hidden'); btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Memverifikasi...';
+
+  try {
+    const res = await fetch(GAS_SUPERAPP_URL, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'LOGIN', email, password })
+    });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      adminSession = { email, password };
+      document.getElementById('admin-pass').value = '';
+      closeAdminLogin();
+      openAdminPanel();
+    } else {
+      errEl.textContent = data.message || 'Email atau Password salah.';
+      errEl.classList.remove('hidden');
+    }
+  } catch (err) {
+    errEl.textContent = 'Gagal terhubung ke server GAS. Pastikan URL sudah ditempel.';
+    errEl.classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-1"></i> Masuk Panel Admin';
+  }
+}
+
+function openAdminPanel() {
+  document.getElementById('admin-announcement').value = announcementText;
+  renderAdminLinksList();
+  document.getElementById('admin-panel-modal').classList.remove('hidden');
+}
+function closeAdminPanel() { document.getElementById('admin-panel-modal').classList.add('hidden'); }
+
+function renderAdminLinksList() {
+  document.getElementById('admin-link-count').textContent = appsDB.length;
+  const el = document.getElementById('admin-links-list');
+  if (appsDB.length === 0) { el.innerHTML = '<div class="p-4 text-center text-slate-400">Belum ada link.</div>'; return; }
+  el.innerHTML = appsDB.map((a, idx) => `
+    <div class="p-3 bg-white flex items-center justify-between gap-2">
+      <div class="min-w-0">
+        <div class="font-bold text-slate-800 truncate">${a.title} <span class="text-[10px] font-semibold text-emerald-700">(${a.category})</span></div>
+        <div class="text-[10px] font-mono text-slate-400 truncate">${a.url}</div>
+      </div>
+      <button onclick="deleteLink(${idx})" class="px-2.5 py-1.5 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold shrink-0">Hapus</button>
+    </div>
+  `).join('');
+}
+
+function addNewLink(e) {
+  e.preventDefault();
+  appsDB.push({
+    id: 'L' + Date.now(),
+    title: document.getElementById('f-title').value.trim(),
+    url: document.getElementById('f-url').value.trim(),
+    desc: document.getElementById('f-desc').value.trim(),
+    category: document.getElementById('f-cat').value.trim(),
+    badge: document.getElementById('f-badge').value.trim(),
+    icon: document.getElementById('f-icon').value,
+    color: document.getElementById('f-color').value
+  });
+  e.target.reset();
+  renderAdminLinksList();
+}
+
+function deleteLink(idx) {
+  if (!confirm(`Hapus layanan "${appsDB[idx].title}"?`)) return;
+  appsDB.splice(idx, 1);
+  renderAdminLinksList();
+}
+
+async function saveAdminChanges() {
+  if (!adminSession) return;
+  const btn = document.getElementById('btn-admin-save');
+  const st = document.getElementById('admin-save-status');
+  announcementText = document.getElementById('admin-announcement').value.trim();
+
+  btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Menyimpan...';
+  try {
+    const res = await fetch(GAS_SUPERAPP_URL, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'SAVE_ALL', email: adminSession.email, password: adminSession.password,
+        links: appsDB, announcement: announcementText
+      })
+    });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      localStorage.setItem('smayo_apps_db', JSON.stringify(appsDB));
+      localStorage.setItem('smayo_announcement', announcementText);
+      renderAnnouncement(); renderCategories(); renderApps();
+      st.textContent = '✓ Berhasil diterbitkan ke seluruh pengguna!';
+      alert('Perubahan berhasil disimpan dan langsung aktif di seluruh HP!');
+    } else throw new Error(data.message);
+  } catch (err) {
+    alert('Gagal menyimpan: ' + err.message);
+  } finally {
+    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Simpan & Terbitkan';
+  }
+}
+
+// ==================== QR & PWA ====================
+function openQrModal() {
+  const url = window.location.href;
+  const qr = qrcode(0, 'M'); qr.addData(url); qr.make();
+  document.getElementById('qr-share-box').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 1, scalable: true });
+  document.getElementById('qr-url-label').textContent = url;
+  document.getElementById('qr-modal').classList.remove('hidden');
+}
+function closeQrModal() { document.getElementById('qr-modal').classList.add('hidden'); }
+
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+async function handleInstallClick() {
+  if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; }
+  else document.getElementById('ios-install-modal').classList.remove('hidden');
+}
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  updateClockAndGreeting();
+  setInterval(updateClockAndGreeting, 1000);
+  loadDynamicData();
+});
+</script>
+</body>
+</html>
