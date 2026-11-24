@@ -6,10 +6,10 @@
   <meta name="theme-color" content="#047857">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>SMAYO Super-App — SMAN 1 Yosowilangun</title>
+  <title>SIMAS — Sistem Informasi Manajemen SMAYO</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon-simas.png">
-  <link rel="apple-touch-icon" href="icon-simas.png">
+  <link rel="apple-touch-icon" href="ison-simas.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
@@ -63,7 +63,7 @@
           <i class="fa-solid fa-sparkles text-yellow-300"></i> SMAYO MANTAP REK!
         </div>
         <h2 id="greeting-text" class="text-base sm:text-lg font-extrabold tracking-tight leading-snug">Assalamu'alaikum, Selamat Datang</h2>
-        <p class="text-[11px] text-emerald-100 mt-0.5">Portal Layanan Digital Terpadu SMA Negeri 1 Yosowilangun</p>
+        <p class="text-[11px] text-emerald-100 mt-0.5">Sistem Informasi Manajemen SMAYO — SMAN 1 Yosowilangun</p>
       </div>
 
       <div class="sm:text-right bg-slate-950/35 border border-white/15 rounded-xl px-3.5 py-2.5 shrink-0">
@@ -101,7 +101,7 @@
   <!-- Loading State -->
   <div id="loading-state" class="bg-white rounded-2xl border border-slate-200 p-8 text-center">
     <i class="fa-solid fa-spinner fa-spin text-2xl text-emerald-700 mb-2"></i>
-    <p class="text-xs font-bold text-slate-500">Memuat layanan SMAYO Super-App...</p>
+    <p class="text-xs font-bold text-slate-500">Memuat layanan SIMAS...</p>
   </div>
 
   <!-- Grid Aplikasi -->
@@ -116,8 +116,44 @@
 
 <footer class="max-w-4xl mx-auto px-4 mt-10 text-center text-[11px] text-slate-400">
   <p class="font-bold text-slate-500">SMA Negeri 1 Yosowilangun • Kabupaten Lumajang</p>
-  <p class="mt-0.5">SMAYO Super-App • Dikelola oleh Tim Humas &amp; IT Sekolah</p>
+  <p class="mt-0.5">SIMAS • Dikelola oleh Tim Humas &amp; IT Sekolah</p>
 </footer>
+
+<!-- ==================== IN-APP VIEWER (BUKA LINK DI DALAM SUPER-APP) ==================== -->
+<div id="app-viewer-modal" class="fixed inset-0 z-50 hidden bg-slate-900 flex flex-col">
+  <div class="bg-emerald-950 text-white px-3 py-2.5 flex items-center justify-between gap-2 shadow-md shrink-0">
+    <div class="flex items-center gap-2 min-w-0">
+      <button onclick="closeAppViewer()" class="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-extrabold flex items-center gap-1.5 shrink-0 transition">
+        <i class="fa-solid fa-arrow-left"></i> <span>Kembali</span>
+      </button>
+      <div class="min-w-0">
+        <div id="viewer-title" class="text-xs sm:text-sm font-extrabold truncate">Layanan SIMAS</div>
+        <div id="viewer-url-sub" class="text-[10px] text-emerald-300 truncate hidden sm:block"></div>
+      </div>
+    </div>
+    <div class="flex items-center gap-1.5 shrink-0">
+      <button onclick="reloadAppViewer()" title="Muat Ulang" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-xs transition">
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+      <a id="viewer-external-btn" href="#" target="_blank" rel="noopener noreferrer" title="Buka di Browser Eksternal"
+        class="px-2.5 py-1.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-900 text-[11px] font-extrabold flex items-center gap-1 transition">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> <span class="hidden sm:inline">Browser</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="relative flex-1 bg-white w-full h-full overflow-hidden">
+    <div id="viewer-loading" class="absolute inset-0 bg-slate-50 flex flex-col items-center justify-center z-10 pointer-events-none">
+      <i class="fa-solid fa-spinner fa-spin text-2xl text-emerald-700 mb-2"></i>
+      <p class="text-xs font-bold text-slate-600">Membuka layanan di dalam SIMAS...</p>
+      <p class="text-[10px] text-slate-400 mt-1">Jika halaman tidak tampil, klik tombol kuning di pojok kanan atas.</p>
+    </div>
+    <iframe id="viewer-iframe" src="about:blank" class="w-full h-full border-0"
+      allow="camera *; microphone *; geolocation *; clipboard-write *; fullscreen *"
+      allowfullscreen
+      onload="document.getElementById('viewer-loading').classList.add('hidden')"></iframe>
+  </div>
+</div>
 
 <!-- ==================== MODAL LOGIN ADMIN TUNGGAL ==================== -->
 <div id="admin-login-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
@@ -127,7 +163,7 @@
       <div class="w-12 h-12 mx-auto rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-xl mb-2">
         <i class="fa-solid fa-user-shield text-yellow-300"></i>
       </div>
-      <h3 class="font-extrabold text-base">LOGIN ADMIN SUPER-APP</h3>
+      <h3 class="font-extrabold text-base">LOGIN ADMIN SIMAS</h3>
       <p class="text-[11px] text-emerald-200 mt-0.5">Akses khusus pengelola link &amp; pengumuman</p>
     </div>
     <form onsubmit="handleAdminLogin(event)" class="p-6 space-y-3.5">
@@ -154,7 +190,7 @@
   <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden">
     <div class="bg-emerald-900 text-white px-5 py-4 flex items-center justify-between shrink-0">
       <div>
-        <h3 class="font-extrabold text-sm sm:text-base"><i class="fa-solid fa-sliders text-yellow-300 mr-1.5"></i>Panel Admin SMAYO Super-App</h3>
+        <h3 class="font-extrabold text-sm sm:text-base"><i class="fa-solid fa-sliders text-yellow-300 mr-1.5"></i>Panel Admin SIMAS</h3>
         <p class="text-[11px] text-emerald-200">Login sebagai: humassmayo@gmail.com</p>
       </div>
       <button onclick="closeAdminPanel()" class="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-bold">Tutup</button>
@@ -234,7 +270,7 @@
   <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm text-center p-6 relative">
     <button onclick="closeQrModal()" class="absolute right-4 top-4 w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
     <div class="text-xs font-extrabold uppercase tracking-wider text-emerald-700">Bagikan Portal</div>
-    <h3 class="text-base font-extrabold text-slate-900 mt-0.5">Scan QR SMAYO Super-App</h3>
+    <h3 class="text-base font-extrabold text-slate-900 mt-0.5">Scan QR SIMAS</h3>
     <div id="qr-share-box" class="p-3 bg-white border-2 border-emerald-700 rounded-2xl inline-block shadow-sm my-4"></div>
     <div id="qr-url-label" class="text-[10px] font-mono text-slate-500 break-all bg-slate-100 p-2 rounded-xl"></div>
   </div>
@@ -268,6 +304,7 @@ try {
 let activeCategory = 'Semua';
 let deferredPrompt = null;
 let adminSession = null;
+let currentViewerUrl = '';
 
 // ==================== JAM REALTIME & SAPAAN KHAS ====================
 function updateClockAndGreeting() {
@@ -356,9 +393,9 @@ function renderApps() {
   empty.classList.add('hidden');
 
   grid.innerHTML = filtered.map(a => `
-    <a href="${a.url}" target="_blank" rel="noopener noreferrer"
-      class="app-card bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm flex flex-col justify-between gap-3 group">
-      <div class="flex items-start justify-between gap-2">
+    <button type="button" onclick="openAppViewer('${String(a.id).replace(/'/g, "\\'")}')"
+      class="app-card text-left bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm flex flex-col justify-between gap-3 group w-full">
+      <div class="flex items-start justify-between gap-2 w-full">
         <div class="w-12 h-12 rounded-2xl ${a.color || 'bg-emerald-600'} text-white flex items-center justify-center text-xl shadow-md">
           <i class="${a.icon || 'fa-solid fa-link'}"></i>
         </div>
@@ -368,13 +405,57 @@ function renderApps() {
         <h3 class="font-extrabold text-sm text-slate-900 group-hover:text-emerald-700 transition leading-snug">${a.title}</h3>
         <p class="text-[11px] text-slate-500 mt-1 leading-relaxed line-clamp-2">${a.desc || ''}</p>
       </div>
-      <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px] font-bold text-emerald-700">
+      <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px] font-bold text-emerald-700 w-full">
         <span>Buka Layanan</span>
-        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+        <i class="fa-solid fa-chevron-right text-[10px]"></i>
       </div>
-    </a>
+    </button>
   `).join('');
 }
+
+// ==================== IN-APP VIEWER (TETAP DI DALAM SUPER-APP) ====================
+function openAppViewer(appId) {
+  const app = appsDB.find(a => String(a.id) === String(appId));
+  if (!app || !app.url) return;
+
+  currentViewerUrl = app.url;
+  document.getElementById('viewer-title').textContent = app.title;
+  document.getElementById('viewer-url-sub').textContent = app.url;
+  document.getElementById('viewer-external-btn').href = app.url;
+  document.getElementById('viewer-loading').classList.remove('hidden');
+  document.getElementById('viewer-iframe').src = app.url;
+  document.getElementById('app-viewer-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+
+  try { history.pushState({ viewerOpen: true }, '', '#layanan'); } catch (e) {}
+}
+
+function closeAppViewer(fromPopstate = false) {
+  const modal = document.getElementById('app-viewer-modal');
+  if (modal.classList.contains('hidden')) return;
+
+  modal.classList.add('hidden');
+  document.getElementById('viewer-iframe').src = 'about:blank';
+  document.body.style.overflow = '';
+  currentViewerUrl = '';
+
+  if (!fromPopstate && history.state && history.state.viewerOpen) {
+    try { history.back(); } catch (e) {}
+  }
+}
+
+function reloadAppViewer() {
+  if (!currentViewerUrl) return;
+  document.getElementById('viewer-loading').classList.remove('hidden');
+  document.getElementById('viewer-iframe').src = currentViewerUrl;
+}
+
+window.addEventListener('popstate', () => {
+  const modal = document.getElementById('app-viewer-modal');
+  if (!modal.classList.contains('hidden')) {
+    closeAppViewer(true);
+  }
+});
 
 // ==================== ADMIN LOGIN & PANEL KELOLA LINK ====================
 function openAdminGate() {
@@ -493,7 +574,7 @@ async function saveAdminChanges() {
 
 // ==================== QR & PWA ====================
 function openQrModal() {
-  const url = window.location.href;
+  const url = window.location.href.split('#')[0];
   const qr = qrcode(0, 'M'); qr.addData(url); qr.make();
   document.getElementById('qr-share-box').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 1, scalable: true });
   document.getElementById('qr-url-label').textContent = url;
@@ -510,7 +591,6 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
 
-// Jalankan segera saat halaman siap
 updateClockAndGreeting();
 setInterval(updateClockAndGreeting, 1000);
 loadDynamicData();
