@@ -1,5 +1,5 @@
-const CACHE_NAME = 'smayo-superapp-v2';
-const ASSETS = ['./', './index.html', './manifest.json', './logo.png', './jargon.jpg'];
+const CACHE_NAME = 'sigiats-v3';
+const ASSETS = ['./', './index.html', './manifest.json', './icon-512.png', './jargon.jpg'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS)).catch(() => {}));
