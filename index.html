@@ -6,10 +6,10 @@
   <meta name="theme-color" content="#047857">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>SIMAS — Sistem Informasi Manajemen SMAYO</title>
+  <title>SIGIATS — Sistem Informasi Digital Terintegrasi SMAYO</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" href="icon-simas.png">
-  <link rel="apple-touch-icon" href="icon-simas.png">
+  <link rel="icon" type="image/png" href="icon-512.png">
+  <link rel="apple-touch-icon" href="icon-512.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
@@ -33,10 +33,10 @@
     .marquee-track {
       display: inline-block;
       padding-left: 100%;
-      animation: simas-marquee 22s linear infinite;
+      animation: sigiats-marquee 22s linear infinite;
     }
     .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
-    @keyframes simas-marquee {
+    @keyframes sigiats-marquee {
       0% { transform: translateX(0); }
       100% { transform: translateX(-100%); }
     }
@@ -130,7 +130,7 @@
   <!-- Loading State -->
   <div id="loading-state" class="bg-white rounded-2xl border border-slate-200 p-8 text-center">
     <i class="fa-solid fa-spinner fa-spin text-2xl text-emerald-700 mb-2"></i>
-    <p class="text-xs font-bold text-slate-500">Memuat layanan SIMAS...</p>
+    <p class="text-xs font-bold text-slate-500">Memuat layanan SIGIATS...</p>
   </div>
 
   <!-- 4. GRID APLIKASI -->
@@ -145,7 +145,7 @@
 
 <footer class="max-w-4xl mx-auto px-4 mt-10 text-center text-[11px] text-slate-400">
   <p class="font-bold text-slate-500">SMA Negeri 1 Yosowilangun • Kabupaten Lumajang</p>
-  <p class="mt-0.5">SIMAS • Dikelola oleh Tim Humas &amp; IT Sekolah</p>
+  <p class="mt-0.5">SIGIATS • Dikelola oleh Tim Humas &amp; IT Sekolah</p>
 </footer>
 
 <!-- ==================== IN-APP VIEWER ==================== -->
@@ -156,7 +156,7 @@
         <i class="fa-solid fa-arrow-left"></i> <span>Kembali</span>
       </button>
       <div class="min-w-0">
-        <div id="viewer-title" class="text-xs sm:text-sm font-extrabold truncate">Layanan SIMAS</div>
+        <div id="viewer-title" class="text-xs sm:text-sm font-extrabold truncate">Layanan SIGIATS</div>
         <div id="viewer-url-sub" class="text-[10px] text-emerald-300 truncate hidden sm:block"></div>
       </div>
     </div>
@@ -174,7 +174,7 @@
   <div class="relative flex-1 bg-white w-full h-full overflow-hidden">
     <div id="viewer-loading" class="absolute inset-0 bg-slate-50 flex flex-col items-center justify-center z-10 pointer-events-none">
       <i class="fa-solid fa-spinner fa-spin text-2xl text-emerald-700 mb-2"></i>
-      <p class="text-xs font-bold text-slate-600">Membuka layanan di dalam SIMAS...</p>
+      <p class="text-xs font-bold text-slate-600">Membuka layanan di dalam SIGIATS...</p>
       <p class="text-[10px] text-slate-400 mt-1">Jika halaman tidak tampil, klik tombol kuning di pojok kanan atas.</p>
     </div>
     <iframe id="viewer-iframe" src="about:blank" class="w-full h-full border-0"
@@ -192,8 +192,8 @@
       <div class="w-12 h-12 mx-auto rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-xl mb-2">
         <i class="fa-solid fa-user-shield text-yellow-300"></i>
       </div>
-      <h3 class="font-extrabold text-base">LOGIN ADMIN SIMAS</h3>
-      <p class="text-[11px] text-emerald-200 mt-0.5">Akses khusus pengelola SIMAS</p>
+      <h3 class="font-extrabold text-base">LOGIN ADMIN SIGIATS</h3>
+      <p class="text-[11px] text-emerald-200 mt-0.5">Akses khusus pengelola SIGIATS</p>
     </div>
     <form onsubmit="handleAdminLogin(event)" class="p-6 space-y-3.5">
       <div>
@@ -219,7 +219,7 @@
   <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden">
     <div class="bg-emerald-900 text-white px-5 py-4 flex items-center justify-between shrink-0">
       <div>
-        <h3 class="font-extrabold text-sm sm:text-base"><i class="fa-solid fa-sliders text-yellow-300 mr-1.5"></i>Panel Admin SIMAS</h3>
+        <h3 class="font-extrabold text-sm sm:text-base"><i class="fa-solid fa-sliders text-yellow-300 mr-1.5"></i>Panel Admin SIGIATS</h3>
         <p class="text-[11px] text-emerald-200">Login sebagai: humassmayo@gmail.com</p>
       </div>
       <button onclick="closeAdminPanel()" class="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-bold">Tutup</button>
@@ -318,7 +318,7 @@
   <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm text-center p-6 relative">
     <button onclick="closeQrModal()" class="absolute right-4 top-4 w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
     <div class="text-xs font-extrabold uppercase tracking-wider text-emerald-700">Bagikan Portal</div>
-    <h3 class="text-base font-extrabold text-slate-900 mt-0.5">Scan QR SIMAS</h3>
+    <h3 class="text-base font-extrabold text-slate-900 mt-0.5">Scan QR SIGIATS</h3>
     <div id="qr-share-box" class="p-3 bg-white border-2 border-emerald-700 rounded-2xl inline-block shadow-sm my-4"></div>
     <div id="qr-url-label" class="text-[10px] font-mono text-slate-500 break-all bg-slate-100 p-2 rounded-xl"></div>
   </div>
@@ -462,7 +462,7 @@ function renderBanners() {
     const clickAttr = b.linkUrl ? `onclick="openBannerLink(${idx})"` : '';
     return `
       <div ${clickAttr} class="w-full shrink-0 relative aspect-[16/6] sm:aspect-[16/5] bg-slate-800 ${clickable}">
-        <img src="${imgSrc}" alt="${b.title || 'Banner SIMAS'}" class="w-full h-full object-cover">
+        <img src="${imgSrc}" alt="${b.title || 'Banner SIGIATS'}" class="w-full h-full object-cover">
         ${b.title ? `
           <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent px-4 pt-6 pb-7">
             <div class="text-white font-extrabold text-xs sm:text-sm drop-shadow line-clamp-1">${b.title}</div>
